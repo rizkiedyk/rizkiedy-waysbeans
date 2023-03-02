@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 	"strconv"
+	"time"
 	"waysbeans/dto"
 	"waysbeans/dto/result"
 	"waysbeans/models"
@@ -51,6 +52,8 @@ func (h *productHandler) CreateProducts(c echo.Context) error {
 		Description: request.Description,
 		Stock:       request.Stock,
 		Photo:       request.Photo,
+		CreateAt:    time.Now(),
+		UpdateAt:    time.Now(),
 	}
 
 	data, err := h.ProductRepository.CreateProduct(product)
