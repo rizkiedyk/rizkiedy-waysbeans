@@ -13,4 +13,5 @@ func ProductRoutes(e *echo.Group) {
 	h := handler.HandlerProduct(productRepository)
 
 	e.GET("/products", h.FindProducts)
+	e.GET("/products/:id", h.GetProducts)
 }
