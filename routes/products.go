@@ -16,4 +16,5 @@ func ProductRoutes(e *echo.Group) {
 	e.GET("/product/:id", h.GetProducts)
 	e.POST("/product", h.CreateProducts)
 	e.PATCH("/product/:id", h.UpdateProducts)
+	e.DELETE("/product/:id", h.DeleteProduct)
 }
