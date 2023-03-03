@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -9,6 +10,7 @@ import (
 	"waysbeans/models"
 	"waysbeans/repositories"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 )
 
@@ -41,11 +43,30 @@ func (h *productHandler) GetProducts(c echo.Context) error {
 }
 
 func (h *productHandler) CreateProducts(c echo.Context) error {
-	request := new(dto.CreateProductRequest)
-	if err := c.Bind(request); err != nil {
+	// datafile
+	dataFile := c.Get("dataFile").(string)
+	fmt.Println("this is data file", dataFile)
+
+	price, _ := strconv.Atoi(c.FormValue("price"))
+	stock, _ := strconv.Atoi(c.FormValue("stock"))
+
+	request := models.Product{
+		Name:        c.FormValue("name"),
+		Description: c.FormValue("description"),
+		Price:       price,
+		Photo:       dataFile,
+		Stock:       stock,
+		CreateAt:    time.Now(),
+		UpdateAt:    time.Now(),
+	}
+
+	validation := validator.New()
+	err := validation.Struct(request)
+	if err != nil {
 		return c.JSON(http.StatusBadRequest, result.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()})
 	}
 
+	// data form pattern submit to pattern entity db product
 	product := models.Product{
 		Name:        request.Name,
 		Price:       request.Price,
