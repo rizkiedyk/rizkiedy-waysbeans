@@ -11,6 +11,7 @@ import (
 	"waysbeans/repositories"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
 )
 
@@ -66,13 +67,17 @@ func (h *productHandler) CreateProducts(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, result.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()})
 	}
 
-	// data form pattern submit to pattern entity db product
+	userLogin := c.Get("userLogin")
+	userId := userLogin.(jwt.MapClaims)["id"].(float64)
+
+	// submit to db product
 	product := models.Product{
 		Name:        request.Name,
 		Price:       request.Price,
 		Description: request.Description,
 		Stock:       request.Stock,
 		Photo:       request.Photo,
+		UserID:      int(userId),
 		CreateAt:    time.Now(),
 		UpdateAt:    time.Now(),
 	}
