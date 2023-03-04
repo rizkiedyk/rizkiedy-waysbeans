@@ -10,9 +10,18 @@ import (
 
 func UploadFile(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
+		var method = c.Request().Method
 		file, err := c.FormFile("photo")
+
 		if err != nil {
-			return c.JSON(http.StatusBadRequest, err)
+			if method == "PATCH" && err.Error() == "http: no such file" {
+				c.Set("dataFile", "")
+				return next(c)
+			}
+		}
+
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, err.Error())
 		}
 
 		src, err := file.Open()
