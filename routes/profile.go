@@ -12,5 +12,6 @@ func ProfileRoutes(e *echo.Group) {
 	ProfileRepository := repositories.RepositoryProfile(mysql.ConnDB)
 	h := handler.HandlerProfile(ProfileRepository)
 
+	e.GET("/profiles", h.FindProfile)
 	e.GET("/profile/:id", h.GetProfile)
 }

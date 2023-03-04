@@ -19,6 +19,15 @@ func HandlerProfile(ProfileRepository repositories.ProfileRepository) *ProfileHa
 	return &ProfileHandler{ProfileRepository}
 }
 
+func (h *ProfileHandler) FindProfile(c echo.Context) error {
+	profile, err := h.ProfileRepository.FindProfile()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, result.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()})
+	}
+
+	return c.JSON(http.StatusOK, result.SuccessResult{Status: http.StatusOK, Data: profile})
+}
+
 func (h *ProfileHandler) GetProfile(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
 

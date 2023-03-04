@@ -135,13 +135,13 @@ func (h *productHandler) DeleteProduct(c echo.Context) error {
 	return c.JSON(http.StatusOK, result.SuccessResult{Status: http.StatusOK, Data: convProduct(data)})
 }
 
-func convProduct(u models.Product) dto.ProductResponse {
-	return dto.ProductResponse{
-		ID:          u.ID,
+func convProduct(u models.Product) models.ProductResponse {
+	return models.ProductResponse{
 		Name:        u.Name,
 		Price:       u.Price,
 		Description: u.Description,
 		Stock:       u.Stock,
 		Photo:       u.Photo,
+		User:        u.User,
 	}
 }
