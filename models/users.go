@@ -23,8 +23,9 @@ type UsersProductResponse struct {
 }
 
 type UsersCartResponse struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
+	ID    int    `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
 }
 
 func (UsersProfileResponse) TableName() string {

@@ -76,5 +76,6 @@ func convProfile(u models.Profile) dto.ProfileResponse {
 		ID:      u.ID,
 		Phone:   u.Phone,
 		Address: u.Address,
+		User:    u.User,
 	}
 }

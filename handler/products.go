@@ -156,6 +156,5 @@ func convProduct(u models.Product) dto.ProductResponse {
 		Description: u.Description,
 		Stock:       u.Stock,
 		Photo:       u.Photo,
-		User:        u.User,
 	}
 }

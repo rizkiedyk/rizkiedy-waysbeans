@@ -36,12 +36,12 @@ func UploadFile(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 		defer tempFile.Close()
 
-		if _, err := io.Copy(tempFile, src); err != nil {
+		if _, err = io.Copy(tempFile, src); err != nil {
 			return c.JSON(http.StatusBadRequest, err)
 		}
 
 		data := tempFile.Name()
-		filename := data[:8]
+		filename := data[8:] // split uploads
 
 		c.Set("dataFile", filename)
 		return next(c)
