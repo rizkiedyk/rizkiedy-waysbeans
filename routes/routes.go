@@ -7,4 +7,5 @@ func Routes(e *echo.Group) {
 	UserRoutes(e)
 	ProfileRoutes(e)
 	AuthRoutes(e)
+	CartRoutes(e)
 }

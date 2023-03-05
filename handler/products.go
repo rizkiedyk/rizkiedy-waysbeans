@@ -48,6 +48,7 @@ func (h *productHandler) CreateProducts(c echo.Context) error {
 	dataFile := c.Get("dataFile").(string)
 	fmt.Println("this is data file", dataFile)
 
+	// conv string to int
 	price, _ := strconv.Atoi(c.FormValue("price"))
 	stock, _ := strconv.Atoi(c.FormValue("stock"))
 
@@ -78,10 +79,10 @@ func (h *productHandler) CreateProducts(c echo.Context) error {
 		Stock:       request.Stock,
 		Photo:       request.Photo,
 		UserID:      int(userId),
-		CreateAt:    time.Now(),
 		UpdateAt:    time.Now(),
 	}
 
+	// run repositories
 	data, err := h.ProductRepository.CreateProduct(product)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, result.ErrorResult{Status: http.StatusInternalServerError, Message: err.Error()})
@@ -103,11 +104,13 @@ func (h *productHandler) UpdateProducts(c echo.Context) error {
 
 	id, _ := strconv.Atoi(c.Param("id"))
 
+	// run repository get product
 	product, err := h.ProductRepository.GetProduct(id)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, result.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()})
 	}
 
+	//  check update value
 	if request.Name != "" {
 		product.Name = request.Name
 	}
@@ -124,6 +127,7 @@ func (h *productHandler) UpdateProducts(c echo.Context) error {
 		product.Photo = dataFile
 	}
 
+	// run repository update product
 	data, err := h.ProductRepository.UpdateProduct(product, id)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, result.ErrorResult{Status: http.StatusInternalServerError, Message: err.Error()})
@@ -145,8 +149,8 @@ func (h *productHandler) DeleteProduct(c echo.Context) error {
 	return c.JSON(http.StatusOK, result.SuccessResult{Status: http.StatusOK, Data: convProduct(data)})
 }
 
-func convProduct(u models.Product) models.ProductResponse {
-	return models.ProductResponse{
+func convProduct(u models.Product) dto.ProductResponse {
+	return dto.ProductResponse{
 		Name:        u.Name,
 		Price:       u.Price,
 		Description: u.Description,

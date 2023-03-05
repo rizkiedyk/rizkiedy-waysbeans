@@ -8,6 +8,7 @@ import (
 	"waysbeans/models"
 	"waysbeans/repositories"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 )
 
@@ -40,6 +41,12 @@ func (h *UserHandler) GetUser(c echo.Context) error {
 func (h *UserHandler) CreateUser(c echo.Context) error {
 	request := new(dto.CreateUserRequest)
 	if err := c.Bind(request); err != nil {
+		return c.JSON(http.StatusBadRequest, result.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()})
+	}
+
+	validation := validator.New()
+	err := validation.Struct(request)
+	if err != nil {
 		return c.JSON(http.StatusBadRequest, result.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()})
 	}
 
@@ -105,11 +112,8 @@ func (h *UserHandler) DeleteUser(c echo.Context) error {
 
 func convertResponse(u models.User) dto.UserResponse {
 	return dto.UserResponse{
-		ID:       u.ID,
-		Name:     u.Name,
-		Email:    u.Email,
-		Password: u.Password,
-		Profile:  u.Profile,
-		Product:  u.Product,
+		ID:    u.ID,
+		Name:  u.Name,
+		Email: u.Email,
 	}
 }

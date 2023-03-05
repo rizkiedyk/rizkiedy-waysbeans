@@ -10,36 +10,20 @@ type Product struct {
 	Stock       int                  `json:"stock" gorm:"type: int"`
 	Photo       string               `json:"photo" gorm:"type: varchar(255)"`
 	UserID      int                  `json:"user_id" form:"user_id"`
-	User        UsersProfileResponse `json:"user"`
+	User        UsersProductResponse `json:"user"`
 	CreateAt    time.Time            `json:"create_at"`
 	UpdateAt    time.Time            `json:"update_at"`
 }
 
-type ProductResponse struct {
-	ID          int                  `json:"id"`
-	Name        string               `json:"name" form:"name" validate:"required"`
-	Price       int                  `json:"price" form:"price" validate:"required"`
-	Description string               `json:"description" form:"description" validate:"required"`
-	Stock       int                  `json:"stock" form:"stock" validate:"required"`
-	Photo       string               `json:"photo" form:"photo" validate:"required"`
-	UserID      int                  `json:"-"`
-	User        UsersProfileResponse `json:"user"`
-}
-
-type ProductUserResponse struct {
+type ProductCartResponse struct {
 	ID          int    `json:"id"`
 	Name        string `json:"name"`
-	Price       int    `json:"price"`
 	Description string `json:"description"`
-	Stock       int    `json:"stock"`
+	Price       int    `json:"price"`
 	Photo       string `json:"photo"`
-	UserID      int    `json:"-"`
+	Stock       int    `json:"stock"`
 }
 
-func (ProductResponse) TableName() string {
-	return "products"
-}
-
-func (ProductUserResponse) TableName() string {
+func (ProductCartResponse) TableName() string {
 	return "products"
 }
