@@ -27,31 +27,15 @@ func HandlerCart(CartRepository repositories.CartRepository, ProductRepository r
 
 func (h *handlerCart) FindCarts(c echo.Context) error {
 	carts, err := h.CartRepository.FindCarts()
-		if err != nil {
-			return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()})
-		}
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()})
+	}
 
-		if len(carts) > 0 {
-			return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Message: "Data for all carts was successfully obtained", Data: carts})
-		} else {
-			return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: "No record found"})
-		}
-	// userLogin := c.Get("userLogin")
-	// userAdmin := userLogin.(jwt.MapClaims)["is_admin"].(bool)
-	// if userAdmin {
-	// 	carts, err := h.CartRepository.FindCarts()
-	// 	if err != nil {
-	// 		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()})
-	// 	}
-
-	// 	if len(carts) > 0 {
-	// 		return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Message: "Data for all carts was successfully obtained", Data: carts})
-	// 	} else {
-	// 		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: "No record found"})
-	// 	}
-	// } else {
-	// 	return c.JSON(http.StatusUnauthorized, dto.ErrorResult{Status: http.StatusUnauthorized, Message: "Sorry, you're not Admin"})
-	// }
+	if len(carts) > 0 {
+		return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Message: "Data for all carts was successfully obtained", Data: carts})
+	} else {
+		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: "No record found"})
+	}
 }
 
 func (h *handlerCart) GetCart(c echo.Context) error {
@@ -85,14 +69,14 @@ func (h *handlerCart) CreateCart(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()})
 	}
-	product.Stock = product.Stock - request.OrderQuantity
-	_, err = h.ProductRepository.UpdateProduct(product)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()})
-	}
+	// product.Stock = product.Stock - request.OrderQuantity
+	// _, err = h.ProductRepository.UpdateProduct(product)
+	// if err != nil {
+	// 	return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()})
+	// }
 
 	cart := models.Cart{
-		ProductID:     productId,
+		ProductID:     product.ID,
 		OrderQuantity: request.OrderQuantity,
 		UserID:        int(userId),
 	}
@@ -149,22 +133,22 @@ func (h *handlerCart) DeleteCart(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()})
 	}
-	cartOrderQuantity := cart.OrderQuantity
+	// cartOrderQuantity := cart.OrderQuantity
 
 	data, err := h.CartRepository.DeleteCart(cart)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, dto.ErrorResult{Status: http.StatusInternalServerError, Message: err.Error()})
 	}
 
-	product, err := h.ProductRepository.GetProduct(cart.ProductID)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()})
-	}
-	product.Stock = product.Stock + cartOrderQuantity
-	_, err = h.ProductRepository.UpdateProduct(product)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()})
-	}
+	// product, err := h.ProductRepository.GetProduct(cart.ProductID)
+	// if err != nil {
+	// 	return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()})
+	// }
+	// product.Stock = product.Stock + cartOrderQuantity
+	// _, err = h.ProductRepository.UpdateProduct(product)
+	// if err != nil {
+	// 	return c.JSON(http.StatusBadRequest, dto.ErrorResult{Status: http.StatusBadRequest, Message: err.Error()})
+	// }
 
 	return c.JSON(http.StatusOK, dto.SuccessResult{Status: http.StatusOK, Message: "Cart data updated successfully", Data: convertResponseCart(data)})
 }

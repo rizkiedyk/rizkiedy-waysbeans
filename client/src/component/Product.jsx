@@ -5,10 +5,10 @@ import { useMutation, useQuery } from "react-query";
 import { useParams, useNavigate } from "react-router-dom";
 import { API } from "../config/api";
 import Swal from "sweetalert2";
+import { useState } from "react";
 
 // import ModalLogin from "./ModalLogin";
 // import ModalRegister from "./ModalRegister";
-
 
 const Products = (props) => {
   // const params = useParams();
@@ -42,6 +42,8 @@ const Products = (props) => {
   // const [showRegister, setModalRegister] = useState(false);
 
   const navigate = useNavigate();
+  const { IsLogin, user } = props;
+  const [showLogin, setModalLogin] = useState(false);
 
   // Fetching product data from database
   let { data: products } = useQuery("productsCache", async () => {
@@ -50,41 +52,42 @@ const Products = (props) => {
   });
 
   const params = useParams();
-  let Product = products.filter((Product) => Product.id === parseInt(params.id));
+  let Product = products.filter(
+    (Product) => Product.id === parseInt(params.id)
+  );
   Product = Product[0];
 
   const addCart = useMutation(async () => {
     try {
-      // e.preventDefault();
-        const config = {
-          headers: {
-            "Content-type": "application/json",
-          },
-        };
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
 
-        const data = {
-          order_quantity: +1,
-        };
+      const data = {
+        order_quantity: +1,
+      };
 
-        const body = JSON.stringify(data);
+      const body = JSON.stringify(data);
 
-        console.log(body);
-        const response = await API.post(`/cart/${Product.id}`, body, config);
-        console.log("transaction success :", response);
+      console.log(body);
+      const response = await API.post(`/cart/${Product.id}`, body, config);
+      console.log("transaction success :", response);
 
-        navigate("/my-cart");
-        Swal.fire({
-          position: "center",
-          icon: "success",
-          title: "Add Success",
-          showConfirmButton: false,
-          timer: 1500,
-        });
+      navigate("/my-cart");
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Add Success",
+        showConfirmButton: false,
+        timer: 1500,
+      });
     } catch {
       Swal.fire({
         position: "center",
         icon: "failed",
-        title: "Failed",
+        title: "Failed Existing Product in Cart",
         showConfirmButton: false,
         timer: 1500,
       });
@@ -93,32 +96,49 @@ const Products = (props) => {
 
   return (
     <>
-      <div className="container d-flex justify-content-center align-items-center mb-5" style={{ marginTop: 92, padding: "0 100px" }}>
+      <div
+        className="container d-flex justify-content-center align-items-center mb-5"
+        style={{ marginTop: 92, padding: "0 100px" }}
+      >
         <div className="left-content">
           <div className="img-wrapper" style={{ width: 436, height: 555 }}>
-            <img src={`http://localhost:5000/uploads/${Product.photo}`} alt={Product.name} style={{ width: "100%" }} />
+            <img
+              src={`http://localhost:5000/uploads/${Product.photo}`}
+              alt={Product.name}
+              style={{ width: "100%" }}
+            />
           </div>
         </div>
         <div className="ms-5 right-content">
           <div className="right-wrapper">
             <h1 className="fw-bold" style={{ color: "#613D2B", marginTop: 0 }}>
-            {Product.name}
+              {Product.name}
             </h1>
-            <p style={{ color: "#974A4A", fontSize: 18 }}>Stock: {Product.stock}</p>
-            <p className="mt-5" style={{ textAlign: "justify", fontSize: 18 }}>
-            {Product.description}
+            <p style={{ color: "#974A4A", fontSize: 18 }}>
+              Stock: {Product.stock}
             </p>
-            <p className="my-4 text-end" style={{ color: "#974A4A", fontWeight: 900, fontSize: 24 }}>
+            <p className="mt-5" style={{ textAlign: "justify", fontSize: 18 }}>
+              {Product.description}
+            </p>
+            <p
+              className="my-4 text-end"
+              style={{ color: "#974A4A", fontWeight: 900, fontSize: 24 }}
+            >
               Rp. {Product.price}
             </p>
           </div>
-          <Button type="submit" onClick={() => addCart.mutate()} className="rounded-3 fw-bold border-0 py-2 w-100 mt-3 text-white" style={{ backgroundColor: "#613D2B" }}>
+          <Button
+            type="submit"
+            onClick={() => addCart.mutate()}
+            className="rounded-3 fw-bold border-0 py-2 w-100 mt-3 text-white"
+            style={{ backgroundColor: "#613D2B" }}
+          >
             Add Cart
           </Button>
         </div>
       </div>
     </>
   );
-}
+};
 
 export default Products;

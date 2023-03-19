@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"waysbeans/database"
 	"waysbeans/pkg/mysql"
 	"waysbeans/routes"
@@ -23,18 +24,20 @@ func main() {
 	// untuk mengakses data yg akan dikirimkan ke frontEnd
 	// Middleware CORS (Cross-Origin Resource Sharing) digunakan untuk mengizinkan atau membatasi akses dari sebuah sumber daya web (website) pada domain yang berbeda
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-	  AllowOrigins: []string{"*"},
-	  AllowMethods: []string{echo.GET, echo.POST, echo.PATCH, echo.DELETE},
-	  AllowHeaders: []string{"X-Requested-With", "Content-Type", "Authorization"},
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{echo.GET, echo.POST, echo.PATCH, echo.DELETE},
+		AllowHeaders: []string{"X-Requested-With", "Content-Type", "Authorization"},
 	}))
-	
+
 	mysql.DatabaseInit()
 	database.RunMigration()
-	
+
 	routes.RouteInit(e.Group("/api/v1"))
-	
+
 	e.Static("/uploads", "./uploads")
-	
-	fmt.Println("server running localhost:5000")
-	e.Logger.Fatal(e.Start("localhost:5000"))
+
+	var port = os.Getenv("PORT")
+
+	fmt.Println("server running localhost:" + port)
+	e.Logger.Fatal(e.Start(":" + port))
 }

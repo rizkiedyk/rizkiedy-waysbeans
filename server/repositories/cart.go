@@ -45,7 +45,7 @@ func (r *repository) UpdateCart(cart models.Cart) (models.Cart, error) {
 }
 
 func (r *repository) DeleteCart(cart models.Cart) (models.Cart, error) {
-	err := r.db.Delete(&cart).Scan(&cart).Error
+	err := r.db.Delete(&cart).Error
 
 	return cart, err
 }
